@@ -1,0 +1,31 @@
+{
+  "name": "oidc-picker",
+  "version": "0.1.0",
+  "description": "A local OpenID Connect provider: pick a profile and you are signed in, no password.",
+  "scripts": {
+    "start": "node src/cli.ts",
+    "test": "node --test \"test/**/*.test.ts\"",
+    "typecheck": "tsc"
+  },
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "jose": "^6.2.12",
+    "oidc-provider": "^9.12.2",
+    "yaml": "^2.9.1"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "@types/oidc-provider": "^9.12.1",
+    "typescript": "^7.0.2"
+  },
+  "bin": {
+    "oidc-picker": "src/cli.ts"
+  },
+  "engines": {
+    "node": ">=22.18"
+  },
+  "files": [
+    "src"
+  ]
+}

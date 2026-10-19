@@ -1,0 +1,37 @@
+# oidc-picker configuration. Local development only: anyone who reaches the server
+# signs in as any profile below, without a password.
+issuer: http://localhost:5556
+
+# Audience (aud) of the access tokens. Defaults to <issuer>/api.
+# audience: my-api
+
+# Show the picker on every sign-in, even with an open session (default true).
+# alwaysPick: true
+
+# Accept grant_type=password for scripts; the password is ignored (default true).
+# passwordGrant: true
+
+# Keep the signing keys across restarts, so tokens in the browser stay valid.
+keysFile: .data/keys.json
+
+clients:
+  - id: my-web-app
+    # No secret: a public client, authorization code with PKCE.
+    redirectUris:
+      - http://localhost:5173
+      # `*` matches any characters except /, ? and #.
+      - https://*.app.localhost:8800
+
+profiles:
+  - email: admin@example.org
+    name: Ada Admin
+    description: Every permission
+    claims:
+      roles: [admin]
+  - email: member@example.org
+    name: Max Member
+    claims:
+      roles: [member]
+
+# Profiles can also come from a file, read again whenever it changes:
+# profilesFile: profiles.local.yaml
