@@ -171,7 +171,18 @@ export async function createPicker(config: Config): Promise<Picker> {
     return callback(req, res)
   }
 
+  /** The person the gatekeeper signed in, or null when one is required and missing. */
+  function actorOf(req: IncomingMessage): string | null | undefined {
+    if (!config.actorHeader) return undefined
+    const value = req.headers[config.actorHeader]
+    const actor = Array.isArray(value) ? value[0] : value
+    return actor?.trim() || null
+  }
+
   async function showInteraction(req: IncomingMessage, res: ServerResponse): Promise<void> {
+    if (actorOf(req) === null) {
+      return send(res, 403, "text/plain", "Sign in through the gatekeeper first.")
+    }
     const details = await provider.interactionDetails(req, res)
     if (details.prompt.name === "login") {
       const html = renderPicker({
@@ -207,10 +218,19 @@ export async function createPicker(config: Config): Promise<Picker> {
     if (req.method !== "POST") {
       return send(res, 405, "text/plain", "Method not allowed")
     }
+    const actor = actorOf(req)
+    if (actor === null) {
+      return send(res, 403, "text/plain", "Sign in through the gatekeeper first.")
+    }
     const form = new URLSearchParams(await readBody(req))
     const profile = findProfile(form.get("sub") ?? undefined)
     if (!profile) {
       return send(res, 400, "text/plain", "Unknown profile")
+    }
+    if (actor) {
+      // The audit trail of who signs in as whom: one JSON line on stdout.
+      const details = await provider.interactionDetails(req, res)
+      console.log(JSON.stringify({ event: "pick", at: new Date().toISOString(), actor, profile: profile.email, client: details.params.client_id }))
     }
     return finish(req, res, { login: { accountId: profile.sub } }, { mergeWithLastSubmission: false })
   }

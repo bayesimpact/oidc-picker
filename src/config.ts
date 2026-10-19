@@ -33,6 +33,12 @@ export interface Config {
   alwaysPick: boolean
   /** Accept grant_type=password for scripts. The password is ignored. */
   passwordGrant: boolean
+  /**
+   * The header a gatekeeper in front of the picker sets to the person it signed in (an
+   * oauth2-proxy's X-Auth-Request-Email, for instance). When set, the picker and its sign-in pages
+   * refuse a request without it, and log who picked which profile; the password grant is off.
+   */
+  actorHeader?: string
   /** Signing and cookie keys are kept here, so a restart keeps tokens valid. */
   keysFile?: string
   clients: ClientConfig[]
@@ -69,6 +75,8 @@ export function buildConfig(
     )
   }
 
+  const actorHeader = raw.actorHeader === undefined ? undefined : String(raw.actorHeader).toLowerCase()
+
   const clients = asArray(raw.clients, "clients").map(readClient)
   if (clients.length === 0) {
     throw new Error("The configuration has no client")
@@ -86,7 +94,9 @@ export function buildConfig(
     host: String(env.OIDC_PICKER_HOST ?? raw.host ?? "127.0.0.1"),
     audience: String(raw.audience ?? `${issuer}/api`),
     alwaysPick: raw.alwaysPick ?? true,
-    passwordGrant: raw.passwordGrant ?? true,
+    // A script's password grant would go around the gatekeeper.
+    passwordGrant: actorHeader ? false : (raw.passwordGrant ?? true),
+    actorHeader,
     keysFile: raw.keysFile === undefined ? undefined : resolve(baseDir, String(raw.keysFile)),
     clients,
     profiles: profilesFile ? watchedProfiles(profilesFile, inlineProfiles ?? []) : () => inlineProfiles ?? [],
