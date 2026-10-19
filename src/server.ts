@@ -190,6 +190,7 @@ export async function createPicker(config: Config): Promise<Picker> {
         clientId: String(details.params.client_id),
         profiles: config.profiles(),
         loginHint: details.params.login_hint as string | undefined,
+        accentColor: config.accentColor,
       })
       return send(res, 200, "text/html; charset=utf-8", html)
     }
