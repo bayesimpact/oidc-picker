@@ -43,6 +43,9 @@ docker build -t oidc-picker .
 docker run --rm -p 5556:5556 -v "$PWD:/config" oidc-picker
 ```
 
+Or the published image, for linux/amd64 and linux/arm64: `ghcr.io/bayesimpact/oidc-picker:latest`
+(main), or a version tag such as `0.1.0`.
+
 Then point your app at the issuer, `http://localhost:5556` in the example, with the client id of
 the configuration.
 
