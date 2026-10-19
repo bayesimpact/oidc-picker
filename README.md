@@ -69,6 +69,32 @@ profiles:
 New claim names are read at startup: restart after adding one. New profiles and new values do
 not need a restart when they come from `profilesFile`.
 
+## Behind a gatekeeper
+
+To reach the picker from outside your machine (a shared test environment, for instance), put it
+behind a gatekeeper that signs people in first, such as
+[oauth2-proxy](https://github.com/oauth2-proxy/oauth2-proxy), and allow the issuer with
+`allowNonLocalIssuer: true`. Then set `actorHeader` to the header the gatekeeper adds with the
+signed-in person:
+
+```yaml
+allowNonLocalIssuer: true
+actorHeader: X-Auth-Request-Email
+```
+
+With `actorHeader` set:
+
+- the picker and its sign-in pages answer 403 to a request without the header, a second barrier
+  if a route of the gatekeeper is ever left open;
+- each pick is logged as one JSON line on stdout, with who picked which profile for which client:
+  `{"event":"pick","at":"…","actor":"…","profile":"…","client":"…"}`;
+- the password grant is off, since a script would get around the gatekeeper with it.
+
+The gatekeeper must remove the header from incoming requests and set it itself; otherwise anyone
+can send it. Browsers call the token, JWKS, discovery and userinfo endpoints without the
+gatekeeper's cookie, so leave those open: they give nothing without a code or a token obtained
+through the picker.
+
 ## Token for a script
 
 ```bash

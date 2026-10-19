@@ -11,6 +11,11 @@ issuer: http://localhost:5556
 # Accept grant_type=password for scripts; the password is ignored (default true).
 # passwordGrant: true
 
+# Header set by a gatekeeper in front of the picker (oauth2-proxy, for instance) to the person
+# it signed in. When set, requests without it are refused, picks are logged, and the password
+# grant is off. See "Behind a gatekeeper" in the README.
+# actorHeader: X-Auth-Request-Email
+
 # Keep the signing keys across restarts, so tokens in the browser stay valid.
 keysFile: .data/keys.json
 
