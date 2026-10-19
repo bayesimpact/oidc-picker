@@ -6,11 +6,13 @@ export function renderPicker({
   clientId,
   profiles,
   loginHint,
+  accentColor,
 }: {
   action: string
   clientId: string
   profiles: Profile[]
   loginHint?: string
+  accentColor?: string
 }): string {
   const items = profiles
     .map((profile) => {
@@ -46,8 +48,8 @@ export function renderPicker({
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Pick a profile</title>
 <style>
-  :root { color-scheme: light dark; --bg: #f6f6f4; --card: #fff; --text: #1d1d1b; --muted: #6b6b66; --line: #e2e2dc; --accent: #2f5bea; }
-  @media (prefers-color-scheme: dark) { :root { --bg: #161615; --card: #222220; --text: #ededea; --muted: #a2a29b; --line: #34342f; --accent: #7d9bff; } }
+  :root { color-scheme: light dark; --bg: #fafafa; --card: #fff; --text: #0a0a0a; --muted: #737373; --line: #e5e5e5; --accent: #2f5bea; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #0a0a0a; --card: #171717; --text: #fafafa; --muted: #a1a1a1; --line: #262626; --accent: #7d9bff; } }${accentColor ? `\n  :root:root { --accent: ${accentColor}; }` : ""}
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.4 system-ui, sans-serif; }
   main { max-width: 640px; margin: 0 auto; padding: 32px 16px; }

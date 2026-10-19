@@ -16,6 +16,10 @@ issuer: http://localhost:5556
 # grant is off. See "Behind a gatekeeper" in the README.
 # actorHeader: X-Auth-Request-Email
 
+# The color of the picker's buttons and avatars, any CSS color: your app's, for instance.
+# theme:
+#   accent: "#2f5bea"
+
 # Keep the signing keys across restarts, so tokens in the browser stay valid.
 keysFile: .data/keys.json
 

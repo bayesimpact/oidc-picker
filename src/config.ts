@@ -39,6 +39,8 @@ export interface Config {
    * refuse a request without it, and log who picked which profile; the password grant is off.
    */
   actorHeader?: string
+  /** The color of the picker's buttons and avatars, any CSS color: your app's, for instance. */
+  accentColor?: string
   /** Signing and cookie keys are kept here, so a restart keeps tokens valid. */
   keysFile?: string
   clients: ClientConfig[]
@@ -76,6 +78,11 @@ export function buildConfig(
   }
 
   const actorHeader = raw.actorHeader === undefined ? undefined : String(raw.actorHeader).toLowerCase()
+  const accentColor = raw.theme?.accent === undefined ? undefined : String(raw.theme.accent).trim()
+  // Written into the page's style: a color, nothing that could close the rule or the element.
+  if (accentColor !== undefined && !/^[#\w\s().,%/-]+$/u.test(accentColor)) {
+    throw new Error(`theme.accent is not a CSS color: ${accentColor}`)
+  }
 
   const clients = asArray(raw.clients, "clients").map(readClient)
   if (clients.length === 0) {
@@ -97,6 +104,7 @@ export function buildConfig(
     // A script's password grant would go around the gatekeeper.
     passwordGrant: actorHeader ? false : (raw.passwordGrant ?? true),
     actorHeader,
+    accentColor,
     keysFile: raw.keysFile === undefined ? undefined : resolve(baseDir, String(raw.keysFile)),
     clients,
     profiles: profilesFile ? watchedProfiles(profilesFile, inlineProfiles ?? []) : () => inlineProfiles ?? [],

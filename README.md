@@ -19,6 +19,8 @@ provider: the protocol part is not ours.
   Silent requests (`prompt=none`) keep the current session. Set `alwaysPick: false` to keep
   sessions like a normal provider.
 - Logout (`end_session_endpoint`) without a confirmation page.
+- The color of your app on the picker: `theme.accent`, any CSS color. Light and dark mode follow
+  the system.
 - Redirect URI patterns: `https://*.app.localhost:8800` matches one host per branch or worktree.
   `*` never matches `/`, `?` or `#`.
 - Profiles with any extra claims (roles, groups, tenant...), in the tokens and in userinfo.
